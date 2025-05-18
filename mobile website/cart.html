@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Cart</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: rgb(27, 94, 153);
+      margin: 0;
+      padding: 20px;
+      color: #111;
+    }
+
+    .container {
+      max-width: 600px;
+      width: 90%;
+      background-color: rgb(2, 2, 71);
+      padding: 20px;
+      margin: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      color: antiquewhite;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 1.6rem;
+      text-align: center;
+    }
+
+    .cart-item {
+      border-bottom: 1px solid #ccc;
+      padding: 15px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .cart-item span {
+      font-size: 1rem;
+      word-wrap: break-word;
+    }
+
+    .remove-btn {
+      width: fit-content;
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .remove-btn:hover {
+      background-color: darkred;
+    }
+
+    .btn, .buy-button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .btn {
+      background-color: #111827;
+      color: white;
+    }
+
+    .btn:hover {
+      background-color: #1f2937;
+    }
+
+    .buy-button {
+      background-color: #28a745;
+      color: white;
+      margin-top: 10px;
+    }
+
+    .buy-button:hover {
+      background-color: #218838;
+    }
+
+    #cartTotal {
+      font-weight: bold;
+      font-size: 1.2rem;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    @media (max-width: 500px) {
+      .container {
+        padding: 15px;
+      }
+
+      h2 {
+        font-size: 1.4rem;
+      }
+
+      .cart-item span {
+        font-size: 0.95rem;
+      }
+
+      .btn, .buy-button {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Your Product</h2>
+  <div id="cartItems"></div>
+  <div id="cartTotal">Total: $0.00</div>
+  <button class="btn" onclick="goBack()">← Back to Shop</button>
+  <a href="./productbuy.html">
+    <button class="buy-button">Buy</button>
+  </a>
+</div>
+
+<script>
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const cartItems = document.getElementById('cartItems');
+  const cartTotal = document.getElementById('cartTotal');
+
+  function renderCart() {
+    cartItems.innerHTML = '';
+    let total = 0;
+
+    cart.forEach((item, index) => {
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'cart-item';
+      const subtotal = (item.qty * item.price).toFixed(2);
+      itemDiv.innerHTML = `
+        <span><strong>Product:</strong> ${item.name}</span>
+        <span><strong>Quantity:</strong> ${item.qty}</span>
+        <span><strong>Subtotal:</strong> $${subtotal}</span>
+        <button class="remove-btn" onclick="removeItem(${index})">Cancel This Product</button>
+      `;
+      cartItems.appendChild(itemDiv);
+      total += item.qty * item.price;
+    });
+
+    cartTotal.textContent = `Total: $${total.toFixed(2)}`;
+  }
+
+  function removeItem(index) {
+    cart.splice(index, 1);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    renderCart();
+  }
+
+  function goBack() {
+    location.href = 'product.html';
+  }
+
+  renderCart();
+</script>
+
+</body>
+</html>

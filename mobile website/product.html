@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stylish Product Page</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: rgb(0, 24, 41);
+    }
+
+    header {
+      background: #002169;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 20px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    header h2 {
+      font-size: 1.2rem;
+      margin: 0;
+    }
+
+    .cart {
+      position: relative;
+      cursor: pointer;
+      font-size: 20px;
+    }
+
+    .cart-count {
+      position: absolute;
+      top: -8px;
+      right: -12px;
+      background: red;
+      color: white;
+      border-radius: 50%;
+      padding: 2px 7px;
+      font-size: 12px;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .product {
+      background-color: rgb(156, 144, 228);
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 12px;
+      text-align: center;
+      transition: transform 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .product:hover {
+      transform: translateY(-5px);
+    }
+
+    .product img {
+      width: 100%;
+      height: 130px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .product h4 {
+      margin: 8px 0 4px;
+      font-size: 1rem;
+    }
+
+    .product p {
+      margin: 0 0 10px;
+      font-size: 0.9rem;
+    }
+
+    .product button {
+      padding: 8px 12px;
+      border: none;
+      background-color: #111827;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .product button:hover {
+      background-color: #1f2937;
+    }
+
+    @media (max-width: 480px) {
+      header {
+        padding: 10px 15px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      header h2 {
+        font-size: 1rem;
+        margin-bottom: 10px;
+      }
+
+      .cart {
+        align-self: flex-end;
+      }
+
+      .products {
+        padding: 15px;
+        gap: 15px;
+      }
+
+      .product img {
+        height: 110px;
+      }
+
+      .product h4 {
+        font-size: 0.95rem;
+      }
+
+      .product p {
+        font-size: 0.85rem;
+      }
+
+      .product button {
+        font-size: 0.85rem;
+        padding: 6px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h2>Our Products</h2>
+  <div class="cart" onclick="goToCart()">
+    <i class="fas fa-shopping-cart"></i>
+    <span class="cart-count" id="cartCount">0</span>
+  </div>
+</header>
+
+<div class="products" id="productList"></div>
+
+<script>
+  const products = [
+    { id: 1, name: 'Product 1', price: '11.00', image: 'product/gold.jpg' },
+    { id: 2, name: 'Product 2', price: '12.00', image: 'images/product2.jpg' },
+    { id: 3, name: 'Product 3', price: '13.00', image: 'images/product3.jpg' },
+    { id: 4, name: 'Product 4', price: '14.00', image: 'images/product4.jpg' },
+    { id: 5, name: 'Product 5', price: '15.00', image: 'images/product5.jpg' },
+    { id: 6, name: 'Product 6', price: '16.00', image: 'images/product6.jpg' },
+    { id: 7, name: 'Product 7', price: '17.00', image: 'images/product7.jpg' },
+    { id: 8, name: 'Product 8', price: '18.00', image: 'images/product8.jpg' },
+    { id: 9, name: 'Product 9', price: '19.00', image: 'images/product9.jpg' },
+    { id: 10, name: 'Product 10', price: '20.00', image: 'images/product10.jpg' },
+    { id: 11, name: 'Product 11', price: '21.00', image: 'images/product11.jpg' },
+    { id: 12, name: 'Product 12', price: '22.00', image: 'images/product12.jpg' },
+    { id: 13, name: 'Product 13', price: '23.00', image: 'images/product13.jpg' },
+    { id: 14, name: 'Product 14', price: '24.00', image: 'images/product14.jpg' },
+    { id: 15, name: 'Product 15', price: '25.00', image: 'images/product15.jpg' },
+    { id: 16, name: 'Product 16', price: '26.00', image: 'images/product16.jpg' },
+    { id: 17, name: 'Product 17', price: '27.00', image: 'images/product17.jpg' },
+    { id: 18, name: 'Product 18', price: '28.00', image: 'images/product18.jpg' },
+    { id: 19, name: 'Product 19', price: '29.00', image: 'images/product19.jpg' },
+    { id: 20, name: 'Product 20', price: '30.00', image: 'images/product20.jpg' }
+  ];
+
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const productList = document.getElementById('productList');
+  const cartCount = document.getElementById('cartCount');
+
+  products.forEach(product => {
+    const div = document.createElement('div');
+    div.className = 'product';
+    div.innerHTML = `
+      <img src="${product.image}" alt="${product.name}" />
+      <h4>${product.name}</h4>
+      <p>$${product.price}</p>
+      <button onclick="addToCart(${product.id})">Buy</button>
+    `;
+    productList.appendChild(div);
+  });
+
+  function addToCart(productId) {
+    const item = products.find(p => p.id === productId);
+    const existing = cart.find(c => c.id === item.id);
+    if (existing) {
+      existing.qty += 1;
+    } else {
+      cart.push({ ...item, qty: 1 });
+    }
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartCount();
+  }
+
+  function updateCartCount() {
+    const count = cart.reduce((sum, item) => sum + item.qty, 0);
+    cartCount.textContent = count;
+  }
+
+  function goToCart() {
+    location.href = 'cart.html';
+  }
+
+  updateCartCount();
+</script>
+
+</body>
+</html>
